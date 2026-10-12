@@ -3,3 +3,6 @@ build
 
 # lsp
 .cache
+
+# direnv
+.direnv

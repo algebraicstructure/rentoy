@@ -6,7 +6,7 @@ set(GLFW_BUILD_X11 OFF)
 
 project(rentoy)
 
-add_executable(rentoy src/main.cpp src/gl.c)
+add_executable(rentoy src/main.cpp src/gl.c src/window.cpp)
 
 add_subdirectory(lib/glfw)
 

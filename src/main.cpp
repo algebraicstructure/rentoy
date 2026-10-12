@@ -1,55 +1,41 @@
 #include <cstdlib>
 #include <iostream>
 
+// clang-format off
 #define GLFW_INCLUDE_NONE
 #include "glad/gl.h"
 #include "GLFW/glfw3.h"
+// clang-format on
 
-void error_callback(int error, const char* description)
-{
-    fprintf(stderr, "Error: %s\n", description);
-}
+#include "window.h"
 
-
-int main()
-{
-    glfwSetErrorCallback(error_callback);
-
-    if (!glfwInit())
-        exit(EXIT_FAILURE);
-    std::cout << "Initialized GLFW\n";
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    GLFWwindow* context = glfwCreateWindow(1920, 1080, "Rentoy", NULL, NULL);
-    if (!context) {
-        glfwTerminate();
-        std::cout << "Failed to create OpenGL context\n";
-        exit(EXIT_FAILURE);
-    }
-    std::cout << "Created OpenGL context\n";
-
-    glfwMakeContextCurrent(context);
-    gladLoadGL(glfwGetProcAddress);
-
-    int width, height;
-    glfwGetFramebufferSize(context, &width, &height);
-    glViewport(0, 0, width, height);
+int main() {
+    int width = 1920;
+    int height = 1080;
+    char const* title = "Rentoy";
+    struct Window window = createWindow(width, height, title);
 
     double start_time, end_time = glfwGetTime();
     double frame_time = 0.0;
 
-    while (!glfwWindowShouldClose(context)) {
+    while (!glfwWindowShouldClose(window.context)) {
         start_time = glfwGetTime();
-        glfwSwapBuffers(context);
+        processInput(window.context);
+
+        // rendering commands
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        // check and call events and swap the buffers
+        glfwSwapBuffers(window.context);
+        glfwPollEvents();
+
         end_time = glfwGetTime();
         frame_time = end_time - start_time;
         std::cout << "Frametime = " << frame_time << std::endl;
     }
 
-    std::cout << "Destroying context and terminating GLFW\n";
-    glfwDestroyWindow(context);
+    destroyWindow(window);
     glfwTerminate();
     exit(EXIT_SUCCESS);
 }
